@@ -3,8 +3,10 @@
 #include "arduino-mock/Serial.h"
 
 #include "../BrainShot.ino"
+#include "../FSM.h"
 
 using ::testing::Return;
+/*
 TEST(loop, pushed) {
   ArduinoMock* arduinoMock = arduinoMockInstance();
   SerialMock* serialMock = serialMockInstance();
@@ -15,4 +17,11 @@ TEST(loop, pushed) {
   loop();
   releaseSerialMock();
   releaseArduinoMock();
+}
+*/
+
+TEST(some_fsm, exists) {
+    FSM fsm;
+    fsm.init();
+    fsm.dispatch(0);
 }

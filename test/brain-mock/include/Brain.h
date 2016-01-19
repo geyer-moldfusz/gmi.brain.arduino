@@ -15,8 +15,6 @@ class Brain {
     public:
         Brain(Serial_);
         bool update();
-        char* readCSV();
 };
-
 
 #endif // BRAIN_H

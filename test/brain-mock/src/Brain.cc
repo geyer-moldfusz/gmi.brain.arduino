@@ -1,11 +1,8 @@
 #include "Brain.h"
 
-Brain::Brain(Serial_ s) {}
+Brain::Brain(Serial_) {
+}
 
 bool Brain::update() {
     return true;
-}
-
-char* Brain::readCSV() {
-    return "foo";
 }

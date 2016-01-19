@@ -121,12 +121,15 @@ BrainMock.o: $(BRAIN_MOCK_SRCS_)
 	$(CXX) $(CPPFLAGS) -I$(BRAIN_MOCK_DIR) $(CXXFLAGS) -c \
 		$(BRAIN_MOCK_DIR)/src/BrainMock.cc
 
-brain_mock.a : BrainMock.o
+brain_mock.a: BrainMock.o
 	$(AR) $(ARFLAGS) $@ $^
 
 # Builds a test.  A test should link with either gtest.a or
 # gtest_main.a, depending on whether it defines its own main()
 # function.
+
+BrainShot.o : $(TEST_DIR)/../*.cc $(TEST_DIR)/../*.h
+	$(CXX) $(CPPFLAGS) -I$(BRAIN_MOCK_HEADERS) -I$(ARDUINO_MOCK_HEADERS) $(CXXFLAGS) -c $(TEST_DIR)/../*.cc
 
 BrainShot_unittest.o : $(TEST_DIR)/BrainShot_unittest.cc \
 				$(TEST_DIR)/../BrainShot.ino \
@@ -136,5 +139,6 @@ BrainShot_unittest.o : $(TEST_DIR)/BrainShot_unittest.cc \
 BrainShot_unittest : BrainShot_unittest.o \
 				gmock_main.a  \
 				arduino_mock_all.a \
-				brain_mock.a
+				brain_mock.a \
+				BrainShot.o
 	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -lpthread $^ -o $@

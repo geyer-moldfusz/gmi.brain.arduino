@@ -8,6 +8,5 @@ void setup() {
 
 void loop() {
     if (brain.update()) {
-        Serial.println(brain.readCSV());
     }
 }
