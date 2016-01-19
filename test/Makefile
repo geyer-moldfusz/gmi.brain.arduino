@@ -26,6 +26,8 @@ GMOCK_DIR = ./gmock
 # Remember to tweak this if you move this file.
 ARDUINO_MOCK_DIR = ./arduino-mock
 
+BRAIN_MOCK_DIR = ./brain-mock
+
 # Where to find user code.
 TEST_DIR = .
 
@@ -33,7 +35,7 @@ TEST_DIR = .
 # Set Google Test's header directory as a system directory, such that
 # the compiler doesn't generate warnings in Google Test headers.
 CPPFLAGS += -isystem $(GTEST_DIR)/include -isystem $(GMOCK_DIR)/include \
-		-I$(ARDUINO_MOCK_DIR)/include
+		-I$(ARDUINO_MOCK_DIR)/include -I$(ARDUINO_MOCK_DIR)/include/arduino-mock -I$(BRAIN_MOCK_DIR)/include
 
 # Flags passed to the C++ compiler.
 CXXFLAGS += -g -Wall -Wextra -pthread \
@@ -43,7 +45,7 @@ CXXFLAGS += -g -Wall -Wextra -pthread \
 
 # All tests produced by this Makefile.  Remember to add new tests you
 # created to the list.
-TESTS = DigitalReadSerial_unittest
+TESTS = BrainShot_unittest
 
 
 # All Google Test headers.  Usually you shouldn't change this
@@ -62,6 +64,8 @@ GMOCK_HEADERS = $(GMOCK_DIR)/include/gmock/*.h \
 # Usually you shouldn't change this definition.
 ARDUINO_MOCK_HEADERS = $(ARDUINO_MOCK_DIR)/include/arduino-mock/*.h
 
+BRAIN_MOCK_HEADERS = $(BRAIN_MOCK_DIR)/include/*.h
+
 # House-keeping build targets.
 
 all : $(TESTS)
@@ -71,7 +75,7 @@ test : $(TESTS)
 
 clean :
 	rm -f $(TESTS) gmock.a gtest_main.a gmock_main.a \
-			arduino_mock_all.a *.o
+			arduino_mock_all.a brain_mock.a *.o
 
 # Builds gtest.a and gtest_main.a.
 
@@ -80,6 +84,7 @@ clean :
 GTEST_SRCS_ = $(GTEST_DIR)/src/*.cc $(GTEST_DIR)/src/*.h $(GTEST_HEADERS)
 GMOCK_SRCS_ = $(GMOCK_DIR)/src/*.cc $(GMOCK_HEADERS)
 ARDUINO_MOCK_SRCS_ = $(ARDUINO_MOCK_DIR)/src/*.cc $(ARDUINO_MOCK_HEADERS)
+BRAIN_MOCK_SRCS_ = $(BRAIN_MOCK_DIR)/src/*.cc $(BRAIN_MOCK_HEADERS)
 
 # For simplicity and to avoid depending on implementation details of
 # Google Mock and Google Test, the dependencies specified below are
@@ -112,16 +117,24 @@ ArduinoMockAll.o : $(ARDUINO_MOCK_SRCS_)
 arduino_mock_all.a : ArduinoMockAll.o
 	$(AR) $(ARFLAGS) $@ $^
 
+BrainMock.o: $(BRAIN_MOCK_SRCS_)
+	$(CXX) $(CPPFLAGS) -I$(BRAIN_MOCK_DIR) $(CXXFLAGS) -c \
+		$(BRAIN_MOCK_DIR)/src/BrainMock.cc
+
+brain_mock.a : BrainMock.o
+	$(AR) $(ARFLAGS) $@ $^
+
 # Builds a test.  A test should link with either gtest.a or
 # gtest_main.a, depending on whether it defines its own main()
 # function.
 
-DigitalReadSerial_unittest.o : $(TEST_DIR)/DigitalReadSerial_unittest.cc \
-				$(TEST_DIR)/../DigitalReadSerial.ino \
+BrainShot_unittest.o : $(TEST_DIR)/BrainShot_unittest.cc \
+				$(TEST_DIR)/../BrainShot.ino \
 				$(GTEST_HEADERS)
-	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -c $(TEST_DIR)/DigitalReadSerial_unittest.cc
+	$(CXX) $(CPPFLAGS) -I$(BRAIN_MOCK_HEADERS) -I$(ARDUINO_MOCK_HEADERS) $(CXXFLAGS) -c $(TEST_DIR)/BrainShot_unittest.cc
 
-DigitalReadSerial_unittest : DigitalReadSerial_unittest.o \
+BrainShot_unittest : BrainShot_unittest.o \
 				gmock_main.a  \
-				arduino_mock_all.a
+				arduino_mock_all.a \
+				brain_mock.a
 	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -lpthread $^ -o $@
