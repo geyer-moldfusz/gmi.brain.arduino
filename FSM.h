@@ -17,6 +17,9 @@ class FSM {
     private:
         void initial(unsigned int);
         void idle(unsigned int sig);
+        void reading(unsigned int sig);
+        void processing(unsigned int sig);
+        void printing(unsigned int sig);
 };
 
 #endif // FSM_H

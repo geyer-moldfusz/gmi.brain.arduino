@@ -128,8 +128,8 @@ brain_mock.a: BrainMock.o
 # gtest_main.a, depending on whether it defines its own main()
 # function.
 
-BrainShot.o : $(TEST_DIR)/../*.cc $(TEST_DIR)/../*.h
-	$(CXX) $(CPPFLAGS) -I$(BRAIN_MOCK_HEADERS) -I$(ARDUINO_MOCK_HEADERS) $(CXXFLAGS) -c $(TEST_DIR)/../*.cc
+BrainShot.o : $(TEST_DIR)/../*.cpp $(TEST_DIR)/../*.cc $(TEST_DIR)/../*.h
+	$(CXX) $(CPPFLAGS) -I$(BRAIN_MOCK_HEADERS) -I$(ARDUINO_MOCK_HEADERS) $(CXXFLAGS) -c $(TEST_DIR)/../BrainShot.cc
 
 BrainShot_unittest.o : $(TEST_DIR)/BrainShot_unittest.cc \
 				$(TEST_DIR)/../BrainShot.ino \
