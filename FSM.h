@@ -1,6 +1,8 @@
 #ifndef FSM_H
 #define FSM_H
 
+#include "Printer.h"
+
 class FSM {
     public:
         typedef void (FSM::*State) (unsigned const sig);
@@ -15,6 +17,7 @@ class FSM {
         State myState;
 
     private:
+        Printer *printer;
         void initial(unsigned int);
         void idle(unsigned int sig);
         void reading(unsigned int sig);

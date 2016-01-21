@@ -10,3 +10,9 @@
 [submodule "lib/Brain"]
 	path = lib/Brain
 	url = https://github.com/kitschpatrol/Brain.git
+[submodule "lib/Adafruit-Thermal-Printer-Library"]
+	path = lib/Adafruit-Thermal-Printer-Library
+	url = https://github.com/adafruit/Adafruit-Thermal-Printer-Library.git
+[submodule "lib/Adafruit_Thermal"]
+	path = lib/Adafruit_Thermal
+	url = https://github.com/adafruit/Adafruit-Thermal-Printer-Library.git

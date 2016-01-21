@@ -1,11 +1,14 @@
 #include <Arduino.h>
-#include <Serial.h>
 #include "Logger.h"
 
 void Logger::setup() {
     pinMode(13, OUTPUT);
     pinMode(11, OUTPUT);
     pinMode(12, OUTPUT);
+}
+
+void Logger::log(const __FlashStringHelper *msg) {
+    Serial.println(msg);
 }
 
 void Logger::idle() {
