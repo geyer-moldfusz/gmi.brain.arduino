@@ -4,6 +4,8 @@
 
 FSM::FSM() : myState(&FSM::initial) {
     Logger::setup();
+    map = new Map();
+    neuro = new Neuro();
     printer = new Printer();
 }
 
@@ -31,8 +33,10 @@ void FSM::idle(unsigned int) {
 
 void FSM::reading(unsigned int) {
     Logger::read();
+    neuro->enable();
+    map->load(neuro->read());
+    neuro->disable();
     TRAN(&FSM::processing);
-    delay(5000);
     dispatch(0);
 }
 

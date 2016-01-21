@@ -1,6 +1,8 @@
 #ifndef FSM_H
 #define FSM_H
 
+#include "Map.h"
+#include "Neuro.h"
 #include "Printer.h"
 
 class FSM {
@@ -17,6 +19,8 @@ class FSM {
         State myState;
 
     private:
+        Map *map;
+        Neuro *neuro;
         Printer *printer;
         void initial(unsigned int);
         void idle(unsigned int sig);
