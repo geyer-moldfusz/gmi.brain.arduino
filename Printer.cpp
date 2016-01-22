@@ -1,5 +1,5 @@
-#include "Logger.h"
 #include "Printer.h"
+#include "Logger.h"
 
 Printer::Printer() {
     printerSerial = new SoftwareSerial(RX_PIN, TX_PIN);
@@ -20,10 +20,11 @@ void Printer::disable() {
     printerSerial->end();
 }
 
-void Printer::prnt() {
+void Printer::prnt(int width, int height, Stream* data) {
     Logger::log(F("printer print"));
     printer->feed(2);
-    printer->underlineOn();
-    printer->println(F("PRINTING STUFF\n"));
+    printer->println(F("---START---"));
+    printer->printBitmap(width, height, data);
+    printer->println(F("---END---"));
     printer->feed(2);
 }

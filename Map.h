@@ -1,14 +1,16 @@
 #ifndef MAP_H
 #define MAP_H
 
-#include <Brain.h>
+#define MAP_SIZE (MAP_WIDTH * MAP_HEIGHT / 8)
+
+#include "MapStream.h"
 
 class Map {
     public:
-        Map();
         void load(uint32_t*);
+        Stream*  process();
     private:
-        uint32_t *mapData;
+        MapStream mapStream;
 };
 
 #endif // MAP_H

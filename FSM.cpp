@@ -1,4 +1,5 @@
 #include <Arduino.h>
+
 #include "FSM.h"
 #include "Logger.h"
 
@@ -43,17 +44,14 @@ void FSM::reading(unsigned int) {
 void FSM::processing(unsigned int) {
     Logger::process();
     TRAN(&FSM::printing);
-    delay(5000);
+    delay(50);
     dispatch(0);
 }
 
 void FSM::printing(unsigned int) {
     printer->enable();
-    delay(500);
-    printer->prnt();
-    delay(500);
+    printer->prnt(MAP_WIDTH, MAP_HEIGHT, map->process());
     printer->disable();
-    delay(500);
     TRAN(&FSM::idle);
     dispatch(0);
 }

@@ -4,6 +4,7 @@
 #define RX_PIN 5
 #define TX_PIN 6
 
+#include <Stream.h>
 #include <Adafruit_Thermal.h>
 #include <SoftwareSerial.h>
 
@@ -12,7 +13,7 @@ class Printer {
         Printer();
         void enable();
         void disable();
-        void prnt();
+        void prnt(int, int, Stream*);
 
     private:
         Adafruit_Thermal *printer;
