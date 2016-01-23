@@ -73,6 +73,8 @@ all : $(TESTS)
 test : $(TESTS)
 	for t in $(TESTS); do ./$$t; done;
 
+dump : BrainShot_dump
+
 clean :
 	rm -f $(TESTS) gmock.a gtest_main.a gmock_main.a \
 			arduino_mock_all.a brain_mock.a *.o
@@ -142,3 +144,9 @@ BrainShot_unittest : BrainShot_unittest.o \
 				brain_mock.a \
 				BrainShot.o
 	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -lpthread $^ -o $@
+
+BainShot_dump.o : $(TEST_DIR)/BrainShot_dump.cc
+	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -c $(TEST_DIR)/BrainShot_dump.cc
+
+BrainShot_dump : BrainShot_dump.o
+	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -lbmp -lpthread $^ -o $@
