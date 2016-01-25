@@ -8,34 +8,54 @@ MapStream::MapStream() {
 
 void MapStream::load(uint32_t* data) {
     mapData = data;
+    for (uint8_t i=0; i<8; i++) {
+        uint8_t r = map(
+            constrain(data[i], 0, MAX), 0, MAX, 0, MAP_WIDTH / 4);
+
+        // heads up:
+        // to save RAM we store int8, we have to *2 the values when
+        // using them later.
+        p[i][0] = cos(i * M_PI_4) * r;
+        p[i][1] = sin(i * M_PI_4) * r;
+        Serial.print(p[i][0]);
+        Serial.print(F(":"));
+        Serial.println(p[i][1]);
+
+    }
 }
 
 int MapStream::read() {
     if (!mapData) return -1;
 
-    int16_t x = (MAP_WIDTH / -2) + ((count * 8) % MAP_WIDTH);
-    int16_t y = (MAP_HEIGHT / 2) - ((count * 8) / MAP_WIDTH);
+    x = (MAP_WIDTH / -2) + ((count * 8) % MAP_WIDTH);
+    y = (MAP_HEIGHT / 2) - ((count * 8) / MAP_WIDTH);
 
-    uint8_t d = 0x00;
+    d = 0x00;
 
-    float n = mapData[2] * (MAP_HEIGHT / 2) / MAX_Y;
-    float m = n / (((float)mapData[0] / MAX_X) * (MAP_WIDTH / -2));
+    for (uint8_t i=0; i<8; i++) {
+        if (y < (min(p[(i+1) % 8][1], p[i][1])) * 2) continue;
+        if (y > (max(p[(i+1) % 8][1], p[i][1])) * 2) continue;
 
-    int16_t dist = floor(((y - n) / m) - x);
-    if ((dist >= 0) && (dist < 8)) {
-        d = ((d | 0xe0) >> dist);
-        Serial.println(n);
-        Serial.println(m);
-        Serial.print(dist);
-        Serial.print(F(":"));
-        Serial.print(x);
-        Serial.print(F(":"));
-        Serial.print(y);
-        Serial.print(F(":  "));
-        Serial.println(d, BIN);
+        m = (float)(p[(i+1) % 8][1] - p[i][1]) / (float)(p[(i+1) % 8][0] - p[i][0]);
+        n = (p[i][1] - (p[i][0] * m)) * 2;
+
+        // x distance
+        dist = floor(((y - n) / m) - x);
+        if ((dist >= 0) && (dist < (8 + WIDE))) {
+            if (dist > WIDE) {
+                d = (d | ((0x01 << (8 + WIDE - dist)) - 1));
+                continue;
+            }
+            if ((8 - dist) < WIDE) {
+                d = 0xff;
+                break;
+            }
+        }
+        if (abs(dist) <= WIDE) {
+            d = (d | (0xff << (8 - (WIDE + dist))));
+        }
+        continue;
     }
-
-    if ((x == 0) && ((y % 10) == 0)) d = 0xff;
 
     count++;
     return d;

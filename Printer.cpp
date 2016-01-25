@@ -23,8 +23,11 @@ void Printer::disable() {
 void Printer::prnt(int width, int height, Stream* data) {
     Logger::log(F("printer print"));
     printer->feed(2);
+    printer->justify('C');
     printer->println(F("---START---"));
+    printer->justify('L');
     printer->printBitmap(width, height, data);
+    printer->justify('C');
     printer->println(F("---END---"));
     printer->feed(2);
 }

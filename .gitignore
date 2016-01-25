@@ -4,5 +4,7 @@
 .DS_Store
 *.o
 *.a
+*.bmp
+/test/BrainShot_dump
 /data
 /build-uno

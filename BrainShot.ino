@@ -1,12 +1,23 @@
-
 #include "FSM.h"
+
+#define WAIT 20
 
 FSM *fsm = NULL;
 volatile bool intr = false;
 
-void intr_handler() {
+void disable_intr() {
     detachInterrupt(1);
+}
+
+void intr_handler() {
+    disable_intr();
+    Serial.println(F("INTR"));
     intr = true;
+}
+
+void enable_intr() {
+    EIFR = (1 << INTF1); // clear interrupts
+    attachInterrupt(1, intr_handler, FALLING);
 }
 
 void setup() {
@@ -15,13 +26,14 @@ void setup() {
     fsm->init();
 
     pinMode(3, INPUT_PULLUP);
-    attachInterrupt(1, intr_handler, FALLING);
+    enable_intr();
 }
 
 void loop() {
     if (intr) {
         intr = false;
         fsm->dispatch(0);
-        attachInterrupt(1, intr_handler, FALLING);    
+        enable_intr();
     }
+    delay(100);
 }
